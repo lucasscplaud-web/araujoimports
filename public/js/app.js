@@ -44,7 +44,11 @@ function notifyApiError(error) {
     CEP_INVALIDO: 'Informe um CEP válido com 8 dígitos.',
     FRETE_NAO_CONFIGURADO: 'Frete real ainda não configurado na loja.',
     FRETE_INDISPONIVEL: 'Frete indisponível. Confira o CEP ou tente mais tarde.',
-    CHAVE_IDEMPOTENCIA_REUTILIZADA: 'Solicitação modificada. Abra novamente a finalização.'
+    CHAVE_IDEMPOTENCIA_REUTILIZADA: 'Solicitação modificada. Abra novamente a finalização.',
+    ORIGEM_NAO_AUTORIZADA: 'A origem pública do site não corresponde à configuração do servidor (PUBLIC_ORIGIN).',
+    TIPO_NAO_SUPORTADO: 'Formato de requisição não suportado.',
+    HTTP_503: 'Servidor temporariamente indisponível. Verifique as configurações no Render.',
+    HTTP_403: 'Requisição recusada pelo servidor. Confira PUBLIC_ORIGIN no Render.'
   };
   return messages[error] || 'Ocorreu um erro. Tente novamente.';
 }

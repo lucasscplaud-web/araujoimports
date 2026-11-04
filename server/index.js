@@ -15,7 +15,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const publicDir = resolve(here, '../public');
 const port = Number(process.env.PORT || 3000);
 const production = process.env.NODE_ENV === 'production';
-const publicOrigin = process.env.PUBLIC_ORIGIN || `http://localhost:${port}`;
+// O Render fornece RENDER_EXTERNAL_URL. A configuração explícita tem prioridade.
+// Não aceitar Origin arbitrário do cliente como mecanismo de confiança.
+const publicOrigin = (process.env.PUBLIC_ORIGIN || process.env.RENDER_EXTERNAL_URL || `http://localhost:${port}`).replace(/\/$/, '');
 const trustProxy = process.env.TRUST_PROXY || '0';
 app.set('trust proxy', trustProxy === '0' ? false : Number.isFinite(Number(trustProxy)) ? Number(trustProxy) : trustProxy);
 app.disable('x-powered-by');
@@ -66,7 +68,7 @@ const orderLimiter = rateLimit({
 
 function originGuard(req, res, next) {
   const origin = req.get('origin');
-  if (!origin || origin !== publicOrigin) return res.status(403).json({ error: 'ORIGEM_NAO_AUTORIZADA' });
+  if (!origin || origin.replace(/\/$/, '') !== publicOrigin) return res.status(403).json({ error: 'ORIGEM_NAO_AUTORIZADA' });
   if (!req.is('application/json')) return res.status(415).json({ error: 'TIPO_NAO_SUPORTADO' });
   next();
 }
