@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 800" width="700" height="800"><defs>
+<linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#323334"/><stop offset=".36" stop-color="#2a2b2c"/><stop offset=".74" stop-color="#2a2b2c"/><stop offset="1" stop-color="#202122"/></linearGradient>
+<linearGradient id="sleeve" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#323334"/><stop offset="1" stop-color="#202122"/></linearGradient>
+<filter id="shade"><feDropShadow dx="8" dy="16" stdDeviation="12" flood-opacity=".16"/></filter>
+<pattern id="texture" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 1L9 2 M0 7L9 6" stroke="#fff" stroke-opacity=".035" stroke-width="1"/></pattern>
+</defs><g filter="url(#shade)">
+<path d="M233 119 Q349 105 469 119 L492 285 L462 662 Q452 704 432 708 L372 706 L349 345 L327 706 L256 708 Q234 703 231 670 L206 293Z" fill="url(#cloth)" stroke="#1b1b1c" stroke-width="5"/>
+<path d="M232 119 L469 119 L478 170 Q350 191 223 170Z" fill="#1b1b1c" opacity=".27"/>
+<path d="M231 157 Q354 181 477 157" stroke="#343537" stroke-opacity=".6" stroke-width="6" fill="none"/>
+<path d="M351 160 L351 342 M248 178 L288 257 M451 176 L411 257" stroke="#1b1b1c" opacity=".35" stroke-width="6" fill="none"/>
+<path d="M224 270 L307 287 L302 416 L216 400Z M389 287 L477 268 L484 401 L398 416Z" fill="#1b1b1c" opacity=".2" stroke="#1b1b1c" stroke-width="5"/>
+<path d="M224 286 L306 302 M390 302 L477 284" stroke="#343537" stroke-width="10" opacity=".65"/>
+<path d="M249 420 L304 426 M396 426 L457 421 M246 658 L331 656 M367 655 L456 658" stroke="#1b1b1c" stroke-width="12" opacity=".55"/>
+<path d="M231 272 L255 615 M468 272 L441 615" fill="none" stroke="#343537" stroke-width="9" opacity=".22"/>
+</g></svg>

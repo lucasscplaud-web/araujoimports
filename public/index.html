@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f6f3">
+  <meta name="description" content="ARAUJO IMPORTS — roupa e sneakers com design autoral. Nova coleção 2026.">
+  <title>ARAUJO IMPORTS — Designed to Move</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/app.js" type="module" defer></script>
+</head>
+<body class="is-catalog">
+  <div class="announcement" id="announcement">NOVIDADES / COLEÇÃO 2026</div>
+  <header class="site-header" id="siteHeader">
+    <div class="head-inner">
+      <button class="icon-btn menu-btn" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18M3 12h12M3 17h18"/></svg>
+      </button>
+      <a class="logo" href="/" data-link aria-label="Página inicial ARAUJO IMPORTS">ARAUJO <span class="logo-period">IMPORTS</span></a>
+      <nav class="head-nav" aria-label="Navegação principal">
+        <a href="/" data-link class="nav-active">TODOS</a>
+        <a href="/?categoria=T%C3%AAnis" data-category="Tênis">TÊNIS</a>
+        <a href="/?categoria=Camisetas" data-category="Camisetas">ROUPAS</a>
+        <a href="#story" class="story-link">SOBRE NÓS</a>
+      </nav>
+      <div class="header-actions">
+        <span class="lang">BR / PT</span>
+        <button class="icon-btn" id="searchToggle" type="button" aria-label="Pesquisar produtos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 5 5"/></svg>
+        </button>
+        <button class="cart-toggle icon-btn" id="cartToggle" type="button" aria-label="Abrir sacola">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 8h16l-1.1 12H5.1L4 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
+          <span id="cartBadge" class="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu" hidden>
+      <a href="/" data-link>TODOS OS PRODUTOS</a>
+      <a href="/?categoria=T%C3%AAnis" data-category="Tênis">TÊNIS</a>
+      <a href="/?categoria=Camisetas" data-category="Camisetas">CAMISETAS</a>
+      <a href="/?categoria=Jaquetas" data-category="Jaquetas">JAQUETAS</a>
+    </div>
+  </header>
+
+  <div id="searchPanel" class="search-panel" hidden>
+    <label for="globalSearch">ENCONTRE SEU PRÓXIMO FAVORITO</label>
+    <div class="search-panel-input"><input type="search" id="globalSearch" placeholder="Procure por nome ou categoria..." autocomplete="off"><button id="closeSearch" type="button">FECHAR ×</button></div>
+  </div>
+
+  <main id="catalogPage">
+    <section class="catalog-intro"><div class="page-width">
+      <div class="breadcrumb"><a href="/" data-link>INÍCIO</a> <span>/</span> PRODUTOS</div>
+      <div class="catalog-title-line">
+        <div><p class="eyebrow"><span class="red-square"></span> COLEÇÃO 2026</p><h1>ESSENCIAIS<span class="italic-mark">.</span></h1><p class="intro-description">Peças selecionadas para o seu estilo.</p></div>
+        <div class="edition"><span>EDIÇÃO / 001</span><span>FEITO PARA SEU ESTILO.</span></div>
+      </div>
+    </div></section>
+    <section class="collection page-width" id="collection">
+      <aside class="filters" aria-label="Filtrar produtos">
+        <div class="filters-heading"><strong>FILTROS</strong><button type="button" id="resetFilters">LIMPAR ↗</button></div>
+        <div class="filter-group"><div class="filter-title">CATEGORIAS <span>−</span></div><div class="filter-options" id="categoryFilters"></div></div>
+        <div class="filter-group"><div class="filter-title">TAMANHO <span>−</span></div><div class="size-filters" id="sizeFilters"></div></div>
+        <div class="filter-group"><div class="filter-title">FAIXA DE PREÇO <span>−</span></div><div class="price-label"><span>Até</span> <strong id="priceDisplay">R$ 600,00</strong></div><input type="range" id="priceFilter" min="100" max="600" value="600" step="25" aria-label="Preço máximo"></div>
+        <div class="filter-group"><div class="filter-title">COR <span>−</span></div><div class="color-filter-row" id="colorFilters"></div></div>
+        <div class="filter-editorial"><span>AV/26</span><p>O FUTURO<br>ESTÁ NO<br>SEU ESTILO.</p><div>ESTILO PARA VOCÊ →</div></div>
+      </aside>
+      <div class="products-content">
+        <div class="products-toolbar"><div><strong id="resultsCount">00 PRODUTOS</strong><span class="toolbar-line"></span><span>ESCOLHIDOS PARA VOCÊ</span></div><label class="sort-label">ORDENAR <select id="sortSelect" aria-label="Ordenar produtos"><option value="featured">DESTAQUES</option><option value="price-asc">MENOR PREÇO</option><option value="price-desc">MAIOR PREÇO</option><option value="name">NOME: A–Z</option></select></label></div>
+        <div class="products-grid" id="productGrid" aria-live="polite"><div class="loading-state">CARREGANDO COLEÇÃO...</div></div>
+        <div class="list-bottom"><span>VOCÊ VIU TODA A COLEÇÃO.</span><span>01 — 09</span></div>
+      </div>
+    </section>
+    <section id="story" class="manifesto"><div class="page-width manifesto-inner"><span>NOSSA IDENTIDADE / 001</span><h2>MAIS DO QUE<br>SEU ESTILO. <em>É SEU<br>ESTILO.</em></h2><span>ARAUJO IMPORTS — 2026</span></div></section>
+  </main>
+
+  <main id="productPage" hidden>
+    <div class="product-topline page-width"><a href="/" data-link>← VOLTAR À COLEÇÃO</a><span id="productBreadcrumb">INÍCIO / SHOP / PRODUCT</span><span>COLEÇÃO 001 / ARAUJO IMPORTS</span></div>
+    <section class="product-scene" aria-labelledby="productTitle">
+      <div class="product-orbit orbit-one"></div><div class="product-orbit orbit-two"></div>
+      <div class="scene-word" id="sceneWord">ARC</div>
+      <div class="scene-side scene-side-left"><span>FEITO PARA SEU ESTILO</span><span>2026 COLLECTION ©</span></div>
+      <div class="scene-side scene-side-right"><span>DESTAQUE / 01</span><span>DESCUBRA MAIS ↓</span></div>
+      <div class="scene-hero-copy"><p id="productKicker" class="eyebrow red-text">BASKETBALL / PERFORMANCE</p><h1 id="productTitle">ARC<span>.</span><br>RUNNER</h1><p id="productTagline">RUN BEYOND THE ORDINARY.</p></div>
+      <div class="product-stage" id="productStage" aria-label="Imagem ampliada do produto"></div>
+      <div class="scene-counter"><span id="currentVariantIndex">01</span><span class="counter-track"><span id="counterFill"></span></span><span id="totalVariants">04</span></div>
+      <div class="hero-badge">EDIÇÃO ESPECIAL <span>↗</span></div>
+    </section>
+    <section class="product-purchase page-width">
+      <div class="purchase-col choice-block"><div class="block-label">01 / ESCOLHA SUA COR</div><div class="product-variants" id="productVariants"></div><p class="variant-caption" id="variantCaption">INFRARED / 01</p></div>
+      <div class="purchase-col order-block"><div class="block-label">02 / SUA ESCOLHA</div><div class="order-heading"><div><h2 id="purchaseName">ARC RUNNER 01</h2><span id="purchaseCategory">BASKETBALL / PERFORMANCE</span></div><strong id="purchasePrice">R$ 489,90</strong></div><div class="size-selection"><label for="sizeSelect">SELECIONE O TAMANHO</label><select id="sizeSelect" aria-label="Selecionar tamanho"></select></div><div class="buy-actions"><button id="addToCartBtn" class="btn-primary" type="button">ADICIONAR À SACOLA <span>↗</span></button><button id="buyNowBtn" class="btn-secondary" type="button">COMPRAR AGORA <span>↗</span></button></div></div>
+      <div class="purchase-col inspiration-block"><div class="block-label">03 / DESCRIÇÃO</div><p id="productDescription">Uma silhueta construída para se destacar.</p><div class="inspiration-footer"><span>01</span><span>ESTILO PARA VOCÊ.</span></div></div>
+    </section>
+    <section class="detail-story page-width"><span>PENSADO PARA<br>SEU DIA A DIA.</span><div><p>NOVA PERSPECTIVA</p><h2>FEITO PARA<br><em>SE DESTACAR.</em></h2></div><span>ARAUJO IMPORTS / SEASON 26</span></section>
+  </main>
+
+  <footer class="site-footer"><div class="page-width footer-inner"><div><a href="/" data-link class="footer-logo">ARAUJO IMPORTS</a><p>ESTILO PARA VOCÊ. / EST. 2026</p></div><div class="footer-links"><span>MODA E ESTILO</span><span>PARA O SEU DIA A DIA</span><span>© ARAUJO IMPORTS 2026 · DESENVOLVIDO POR OLIVER STORE</span></div></div></footer>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Sua sacola" aria-hidden="true">
+    <div class="drawer-header"><div><span>SUA ESCOLHA</span><h2>SUA SACOLA <sup id="drawerCount">00</sup></h2></div><button class="drawer-close" id="closeCart" type="button" aria-label="Fechar sacola">×</button></div>
+    <div class="drawer-body" id="cartItems"><div class="empty-cart">SUA SACOLA ESTÁ VAZIA.<small>ESCOLHA SEUS FAVORITOS.</small></div></div>
+    <div class="drawer-footer"><div class="shipping-calculator">
+      <label for="shippingCep">CALCULAR FRETE PELO CEP</label>
+      <div class="shipping-input-row"><input id="shippingCep" inputmode="numeric" maxlength="9" autocomplete="postal-code" placeholder="00000-000" aria-label="CEP de destino"><button id="shippingCalculate" type="button">CALCULAR</button></div>
+      <p id="shippingStatus" class="shipping-status" aria-live="polite">Informe seu CEP para consultar o frete.</p>
+      <div id="shippingOptions" class="shipping-options"></div>
+      <div id="shippingLines" class="shipping-lines"></div>
+    </div>
+    <div class="subtotal"><span>SUBTOTAL</span><strong id="cartTotal">R$ 0,00</strong></div>
+      <div class="subtotal shipping-total"><span>FRETE</span><strong id="cartShipping">A calcular</strong></div>
+      <div class="subtotal grand-total"><span>TOTAL ESTIMADO</span><strong id="cartGrandTotal">R$ 0,00</strong></div><p>Simulação de total com frete. O pré-pedido não inclui pagamento; recalcule antes de cobrar.</p><button class="checkout-button" id="openCheckout" type="button">CONTINUAR <span>↗</span></button></div>
+  </aside>
+  <section id="checkoutModal" class="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle" aria-hidden="true">
+    <div class="modal-head"><div><span>PRÉ-PEDIDO</span><h2 id="checkoutTitle">FINALIZAR SELEÇÃO</h2></div><button id="closeCheckout" type="button" class="drawer-close" aria-label="Fechar">×</button></div>
+    <p class="checkout-hint">Este protótipo recebe <strong>solicitações de pedido</strong>. Nenhum pagamento ou reserva de estoque é realizado.</p>
+    <form id="checkoutForm"><label>NOME COMPLETO<input name="contactName" autocomplete="name" maxlength="90" minlength="2" required placeholder="Seu nome"></label><label>E-MAIL<input name="email" type="email" autocomplete="email" maxlength="254" required placeholder="seuemail@exemplo.com"></label><div class="quote-summary" id="quoteSummary">Carregando cotação...</div><button class="checkout-button" type="submit" id="submitOrder">ENVIAR SOLICITAÇÃO <span>↗</span></button><p id="checkoutMessage" class="checkout-message" role="status" aria-live="polite"></p></form>
+  </section>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

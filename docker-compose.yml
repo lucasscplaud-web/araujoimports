@@ -1,0 +1,29 @@
+# Apenas desenvolvimento local; defina senhas fortes em produção.
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: avant_store
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - avant_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d avant_store']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - '127.0.0.1:6379:6379'
+    volumes:
+      - avant_redis:/data
+volumes:
+  avant_pgdata:
+  avant_redis:

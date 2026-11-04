@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 800" width="700" height="800"><defs>
+<linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#df3942"/><stop offset=".36" stop-color="#ba3037"/><stop offset=".74" stop-color="#ba3037"/><stop offset="1" stop-color="#91252a"/></linearGradient>
+<linearGradient id="sleeve" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#df3942"/><stop offset="1" stop-color="#91252a"/></linearGradient>
+<filter id="shade"><feDropShadow dx="8" dy="16" stdDeviation="12" flood-opacity=".16"/></filter>
+<pattern id="texture" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 1L9 2 M0 7L9 6" stroke="#fff" stroke-opacity=".035" stroke-width="1"/></pattern>
+</defs><g filter="url(#shade)">
+<path d="M170 418 Q167 281 268 218 Q340 173 441 213 Q544 256 553 423 L552 454 Q359 503 169 456Z" fill="url(#cloth)" stroke="#781f23" stroke-width="8"/>
+<path d="M344 193 Q378 278 362 473" fill="none" stroke="#781f23" stroke-width="6" opacity=".3"/>
+<path d="M271 225 Q247 340 290 466 M444 214 Q478 341 432 460" fill="none" stroke="#f13e47" stroke-width="6" opacity=".23"/>
+<path d="M175 447 Q322 405 555 455 Q642 475 665 499 Q678 525 642 545 Q512 611 356 572 Q241 547 142 506 Q118 496 137 474Z" fill="url(#cloth)" stroke="#781f23" stroke-width="8"/>
+<path d="M143 494 Q373 542 654 516" fill="none" stroke="#f13e47" stroke-width="8" opacity=".36"/>
+<path d="M178 458 Q348 497 551 470" fill="none" stroke="#781f23" stroke-width="7"/>
+<text x="355" y="382" font-family="Arial" font-size="44" letter-spacing="-5" font-weight="900" text-anchor="middle" fill="#fff">AVANT.</text>
+<ellipse cx="351" cy="194" rx="14" ry="8" fill="#781f23"/>
+</g></svg>

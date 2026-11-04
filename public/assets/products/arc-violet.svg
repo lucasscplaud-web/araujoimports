@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="780" viewBox="0 0 1200 780" role="img" aria-label="Tênis esportivo estilizado">
+<defs>
+ <linearGradient id="body" x1="0" y1="0" x2=".95" y2=".95"><stop offset="0" stop-color="#fff"/><stop offset=".43" stop-color="#f7f7f4"/><stop offset=".72" stop-color="#e1e2e2"/><stop offset="1" stop-color="#a6a9ae"/></linearGradient>
+ <linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c959ff"/><stop offset=".45" stop-color="#9b45e4"/><stop offset="1" stop-color="#5d2988"/></linearGradient>
+ <linearGradient id="sole" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#282a36"/><stop offset=".44" stop-color="#141720"/><stop offset="1" stop-color="#06090f"/></linearGradient>
+ <linearGradient id="toe" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset=".7" stop-color="#e4e6e5"/><stop offset="1" stop-color="#c2c4c4"/></linearGradient>
+ <linearGradient id="heel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#12161c"/><stop offset="1" stop-color="#000"/></linearGradient>
+ <pattern id="weave" width="19" height="19" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><path d="M0 0 V19 M9 0 V19" stroke="#140f15" stroke-width="2" opacity=".65"/><path d="M0 10 H19" stroke="#fff" stroke-width="1" opacity=".17"/></pattern>
+ <filter id="shadow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="28"/></filter>
+ <filter id="depth"><feDropShadow dx="6" dy="14" stdDeviation="12" flood-opacity=".28"/></filter>
+</defs>
+<ellipse cx="575" cy="660" rx="405" ry="49" fill="#000" opacity=".27" filter="url(#shadow)"/>
+<g transform="rotate(-7 610 390)" filter="url(#depth)">
+ <!-- outer sculpted rubber / deep black outsole -->
+ <path d="M129 521 C132 499 183 477 261 454 C347 429 468 362 548 319 C629 275 693 252 761 214 L878 172 C933 159 962 185 1001 225 L1097 331 C1119 356 1115 386 1095 405 C1011 460 886 513 762 552 C640 591 533 633 402 662 C278 693 179 656 143 605 C129 582 117 551 129 521 Z" fill="url(#sole)" stroke="#4f5460" stroke-width="7"/>
+ <path d="M154 561 C260 654 402 644 574 589 C721 542 925 471 1093 383" fill="none" stroke="#484d5b" stroke-width="9" opacity=".75"/>
+ <path d="M147 581 C250 685 387 654 580 604 C746 555 914 486 1091 409" fill="none" stroke="#090b11" stroke-width="22" opacity=".85"/>
+ <path d="M167 586 C261 652 384 633 555 585" fill="none" stroke="#eef0f0" stroke-width="12" opacity=".85"/>
+ <path d="M173 536 C180 485 263 450 371 408 C461 374 519 319 641 276 L761 201 C829 168 905 177 950 205 C1000 239 1037 286 1074 323 C1094 349 1080 385 1062 401 C886 496 636 590 418 619 C300 634 203 606 171 565 C163 556 165 545 173 536Z" fill="url(#body)" stroke="#d8dadb" stroke-width="8"/>
+ <!-- heel architecture -->
+ <path d="M781 196 C826 162 915 172 951 206 L1062 319 C1030 358 989 385 933 408 L840 289Z" fill="url(#heel)"/>
+ <path d="M906 201 C936 211 979 249 1008 285 L1057 331" fill="none" stroke="#82868b" stroke-width="13" opacity=".45"/>
+ <path d="M963 253 C1000 283 1039 324 1061 356" fill="none" stroke="#9b45e4" stroke-width="20"/>
+ <path d="M1004 269 L1081 336 L1071 363 L995 298 Z" fill="#9b45e4" opacity=".78"/>
+ <!-- round heel badge -->
+ <path d="M913 296 C953 276 986 306 986 348 C986 383 959 419 916 434 C869 449 843 417 847 378 C852 339 876 311 913 296Z" fill="#12151c" stroke="#3d424c" stroke-width="9"/>
+ <path d="M904 311 C933 299 958 327 957 351 C954 377 934 404 909 410 C887 418 869 398 873 375 C876 349 886 321 904 311Z" fill="#20232d" stroke="#6b7078" stroke-width="3"/>
+ <path d="M911 326 L919 362 L898 372" stroke="#f7f7f7" stroke-width="5" fill="none" stroke-linejoin="round"/>
+ <!-- large accent panel -->
+ <path d="M314 423 C392 376 510 333 602 284 C674 248 749 238 825 262 C864 273 892 299 915 331 C838 358 791 396 755 445 C698 516 555 560 400 578 C363 573 326 548 305 514Z" fill="url(#red)" stroke="#191b21" stroke-width="13"/>
+ <path d="M320 427 C411 388 520 337 607 291 C712 240 823 268 895 330 C810 364 774 401 749 442 C673 522 527 550 400 565 C352 546 331 510 320 427Z" fill="url(#weave)" opacity=".94"/>
+ <path d="M367 425 C447 401 514 359 607 317 C710 266 791 283 860 333" fill="none" stroke="#fff" stroke-opacity=".32" stroke-width="13"/>
+ <path d="M379 461 C494 432 595 372 696 327" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="8"/>
+ <!-- toe overlay -->
+ <path d="M166 524 C205 475 253 454 336 427 C324 486 355 543 400 575 C328 606 215 587 166 553Z" fill="url(#toe)" stroke="#f3f3f3" stroke-width="6"/>
+ <path d="M186 513 C224 481 257 468 314 450" fill="none" stroke="#fff" stroke-width="12" opacity=".9"/>
+ <path d="M194 554 C238 568 273 573 306 562" fill="none" stroke="#b4b8b9" stroke-width="5" opacity=".6"/>
+ <!-- collar + high-cut tongue -->
+ <path d="M624 265 C669 224 688 185 735 135 C759 119 793 113 815 130 C832 142 835 176 837 208 L882 263 C835 266 781 280 738 313 C709 323 661 302 624 265Z" fill="#e9ebeb" stroke="#363840" stroke-width="10"/>
+ <path d="M701 207 C715 178 745 131 773 125 C804 119 811 152 808 196 L835 237 C796 238 766 267 741 284Z" fill="#272a33"/>
+ <path d="M745 165 C756 149 769 138 781 140" stroke="#72767b" stroke-width="7" fill="none"/>
+ <!-- tongue fabric and eyestay -->
+ <path d="M592 293 C623 271 661 253 716 250 L767 287 C722 315 658 353 613 368 L571 343Z" fill="#151820" stroke="#333743" stroke-width="10"/>
+ <path d="M627 286 C659 275 684 273 714 276" fill="none" stroke="#e0e0df" stroke-width="7"/>
+ <path d="M619 306 C658 294 689 294 730 293 M606 329 C642 317 671 311 715 308 M592 345 C625 336 661 329 698 322" fill="none" stroke="#fafafa" stroke-width="9" stroke-linecap="round"/>
+ <path d="M618 307 L655 325 M646 300 L675 317 M669 295 L697 311" stroke="#96999c" stroke-width="3"/>
+ <!-- geometry at sole arch -->
+ <path d="M506 591 C582 571 650 548 713 524 L813 469 L834 506 L750 546 C668 584 588 613 499 625Z" fill="#1f232c" opacity=".9"/>
+ <path d="M565 596 C659 563 739 535 809 492" fill="none" stroke="#9b45e4" stroke-width="6" opacity=".65"/>
+ <!-- vent holes -->
+ <g fill="#414750" opacity=".48"><circle cx="250" cy="504" r="4"/><circle cx="268" cy="494" r="4"/><circle cx="285" cy="485" r="4"/><circle cx="239" cy="520" r="3"/><circle cx="260" cy="519" r="3"/></g>
+ <!-- heel pull -->
+ <path d="M777 133 C776 93 793 73 807 70 C829 74 848 111 843 152" fill="none" stroke="#34373c" stroke-width="15"/><path d="M779 136 C781 100 792 87 806 84" fill="none" stroke="#c7c7c8" stroke-width="4"/>
+ <path d="M815 143 C830 155 839 169 838 184" fill="none" stroke="#eee" stroke-width="5"/>
+ <!-- glossy edge highlights -->
+ <path d="M170 537 C220 479 376 418 480 359" fill="none" stroke="#fff" stroke-width="7" opacity=".72"/>
+ <path d="M825 215 C903 213 953 253 988 294" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="8"/>
+ </g>
+</svg>

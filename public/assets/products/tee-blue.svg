@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 800" width="700" height="800"><defs>
+<linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#788eac"/><stop offset=".36" stop-color="#647790"/><stop offset=".74" stop-color="#647790"/><stop offset="1" stop-color="#4e5c70"/></linearGradient>
+<linearGradient id="sleeve" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#788eac"/><stop offset="1" stop-color="#4e5c70"/></linearGradient>
+<filter id="shade"><feDropShadow dx="8" dy="16" stdDeviation="12" flood-opacity=".16"/></filter>
+<pattern id="texture" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 1L9 2 M0 7L9 6" stroke="#fff" stroke-opacity=".035" stroke-width="1"/></pattern>
+</defs><g filter="url(#shade)">
+<path d="M257 151 C270 132 307 121 320 118 L379 118 C409 121 447 135 459 151 L563 189 Q581 201 587 225 L610 314 Q612 327 596 333 L515 361 L500 315 L500 643 Q500 665 481 675 Q351 703 216 675 Q200 667 200 647 L200 315 L185 361 L104 333 Q89 327 94 314 L117 225 Q123 201 142 189Z" fill="url(#cloth)" stroke="#4b596c" stroke-width="2"/>
+<path d="M257 150 C289 192 304 207 350 208 C395 207 423 183 459 150 L435 148 C404 186 377 194 351 194 C322 194 297 183 278 149Z" fill="#4b596c" opacity=".52"/>
+<path d="M283 136 C306 156 320 166 351 167 C382 168 397 156 421 136" fill="none" stroke="#4b596c" stroke-opacity=".67" stroke-width="17"/>
+<path d="M287 133 C306 157 325 167 350 168 C379 168 395 154 413 136" fill="none" stroke="#788eac" stroke-width="8"/>
+<path d="M199 310 L213 269 L219 654 M499 311 L484 270 L480 651" stroke="#4b596c" stroke-opacity=".22" fill="none" stroke-width="9"/>
+<path d="M104 325 L187 350 M514 350 L598 325 M214 655 Q354 678 485 655" stroke="#788eac" stroke-opacity=".45" fill="none" stroke-width="7"/>
+<path d="M335 220 Q320 420 327 646" fill="none" stroke="#fff" stroke-opacity=".04" stroke-width="28"/>
+<path d="M201 313 L500 313 L500 646 Q350 684 200 646Z" fill="url(#texture)"/>
+<text x="349" y="360" font-family="Arial,sans-serif" font-size="22" font-weight="900" letter-spacing="2" text-anchor="middle" fill="#ece8df" opacity=".85">AVANT.</text>
+</g></svg>

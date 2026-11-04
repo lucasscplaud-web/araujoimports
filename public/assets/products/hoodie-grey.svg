@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 800" width="700" height="800"><defs>
+<linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d2d4d0"/><stop offset=".36" stop-color="#afb1ae"/><stop offset=".74" stop-color="#afb1ae"/><stop offset="1" stop-color="#888a87"/></linearGradient>
+<linearGradient id="sleeve" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#d2d4d0"/><stop offset="1" stop-color="#888a87"/></linearGradient>
+<filter id="shade"><feDropShadow dx="8" dy="16" stdDeviation="12" flood-opacity=".16"/></filter>
+<pattern id="texture" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 1L9 2 M0 7L9 6" stroke="#fff" stroke-opacity=".035" stroke-width="1"/></pattern>
+</defs><g filter="url(#shade)">
+<path d="M279 158 Q258 105 305 77 Q345 55 388 77 Q432 105 416 160 L456 176 L527 213 Q550 225 567 260 L615 408 Q622 431 604 439 L526 455 L505 398 L503 653 Q350 703 197 653 L195 398 L174 455 L96 439 Q79 431 86 408 L133 260 Q149 225 172 213 L245 176Z" fill="url(#cloth)" stroke="#7c7d7b" stroke-width="5"/>
+<path d="M281 164 Q278 102 312 88 Q346 69 384 90 Q422 111 414 163 L392 223 Q348 248 309 223Z" fill="#7c7d7b" opacity=".57"/>
+<path d="M301 162 Q313 114 344 112 Q379 108 394 160 L386 197 Q346 218 312 195Z" fill="#7c7d7b" opacity=".8"/>
+<path d="M314 217 Q349 254 388 217" fill="none" stroke="#d2d4d0" stroke-width="20"/>
+<path d="M320 225 L322 305 M375 225 L370 304" fill="none" stroke="#e4e4e4" stroke-width="4" opacity=".8"/>
+<circle cx="322" cy="306" r="5" fill="#7c7d7b"/><circle cx="370" cy="305" r="5" fill="#7c7d7b"/>
+<path d="M247 450 Q348 427 453 450 L466 570 Q351 596 234 570Z" fill="#7c7d7b" opacity=".15" stroke="#7c7d7b" stroke-width="4"/>
+<path d="M239 469 Q349 448 462 469" fill="none" stroke="#d2d4d0" stroke-width="7" opacity=".45"/>
+<path d="M205 624 Q350 664 496 624 M95 422 L173 434 M528 434 L607 422" fill="none" stroke="#7c7d7b" stroke-width="16"/>
+<text x="349" y="375" font-family="Arial" font-size="22" font-weight="900" letter-spacing="2" text-anchor="middle" fill="#353639" opacity=".9">AVANT.</text>
+</g></svg>

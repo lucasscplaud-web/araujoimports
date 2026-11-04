@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 800" width="700" height="800"><defs>
+<linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e1d0b6"/><stop offset=".36" stop-color="#bcae98"/><stop offset=".74" stop-color="#bcae98"/><stop offset="1" stop-color="#928776"/></linearGradient>
+<linearGradient id="sleeve" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#e1d0b6"/><stop offset="1" stop-color="#928776"/></linearGradient>
+<filter id="shade"><feDropShadow dx="8" dy="16" stdDeviation="12" flood-opacity=".16"/></filter>
+<pattern id="texture" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 1L9 2 M0 7L9 6" stroke="#fff" stroke-opacity=".035" stroke-width="1"/></pattern>
+</defs><g filter="url(#shade)">
+<path d="M252 143 Q301 116 333 117 L369 117 Q411 117 448 145 L530 181 Q564 194 577 241 L620 405 Q619 429 601 435 L520 445 L498 375 L492 663 Q350 701 207 663 L200 375 L178 445 L97 435 Q80 429 81 405 L124 241 Q135 194 170 181Z" fill="url(#cloth)" stroke="#7c7264" stroke-width="5"/>
+<path d="M332 120 Q351 154 366 119 L402 126 L383 205 L365 235 L351 218 L331 235 L312 206 L290 129Z" fill="#7c7264" opacity=".45"/>
+<path d="M289 133 Q319 191 347 235 L350 665" fill="none" stroke="#7c7264" stroke-width="17"/>
+<path d="M409 134 Q379 190 355 235 L351 666" fill="none" stroke="#e7d6ba" stroke-width="15"/>
+<path d="M343 242 L343 669" stroke="#0c0d0e" stroke-width="8"/>
+<path d="M357 245 L357 665" stroke="#f6f6f4" stroke-opacity=".65" stroke-width="3"/>
+<path d="M213 347 L200 602 M486 347 L501 602" stroke="#7c7264" stroke-opacity=".5" stroke-width="9"/>
+<path d="M226 440 L300 440 L298 523 L222 523Z M399 440 L474 440 L477 523 L402 523Z" fill="#7c7264" opacity=".22"/>
+<path d="M224 446 H300 M399 446 H475" stroke="#e7d6ba" stroke-width="7" opacity=".8"/>
+<path d="M99 406 L176 417 M520 417 L601 406 M204 643 Q349 675 496 643" stroke="#7c7264" stroke-width="12"/>
+<path d="M257 179 L304 225 M442 179 L393 225" stroke="#e7d6ba" stroke-width="10" opacity=".65"/>
+<text x="439" y="309" font-family="Arial" font-size="17" font-weight="900" letter-spacing="2" fill="#2d2b29" text-anchor="middle">A.</text>
+<path d="M211 376 L491 376 L492 654 Q350 681 207 653Z" fill="url(#texture)"/>
+</g></svg>
