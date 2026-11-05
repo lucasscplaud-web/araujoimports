@@ -138,7 +138,7 @@ async function checkRequiredStructure(pool) {
     }
   }
   const indexes = await pool.query(`SELECT c.relname AS table_name,
-    ARRAY(SELECT a.attname FROM unnest(i.indkey::smallint[]) WITH ORDINALITY AS k(attnum, position)
+    ARRAY(SELECT a.attname::text FROM unnest(i.indkey::smallint[]) WITH ORDINALITY AS k(attnum, position)
       JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum = k.attnum ORDER BY k.position) AS columns
     FROM pg_index i JOIN pg_class c ON c.oid = i.indrelid
     JOIN pg_namespace n ON n.oid = c.relnamespace

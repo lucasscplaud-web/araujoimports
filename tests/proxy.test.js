@@ -53,3 +53,17 @@ test('endereços IPv6 do mesmo bloco permanecem no mesmo limite', async t => {
   }
   assert.equal((await api.post('/api/checkout/quote', cart, { 'X-Forwarded-For': '2001:db8:1::99' })).status, 429);
 });
+
+test('três proxies verificados preservam o cliente apesar de prefixos XFF forjados', async t => {
+  const api = await serve(t, { env: { ...proxyEnv, TRUST_PROXY: '3',
+    TRUSTED_PROXY_CIDRS: '127.0.0.1/32,10.1.2.3/32,198.51.100.0/24' } });
+  for (let index = 0; index < 24; index++) {
+    const response = await api.post('/api/checkout/quote', cart, {
+      'X-Forwarded-For': `192.0.2.${index + 1}, 203.0.113.10, 198.51.100.12, 10.1.2.3`
+    });
+    assert.equal(response.status, 200);
+  }
+  assert.equal((await api.post('/api/checkout/quote', cart, {
+    'X-Forwarded-For': '192.0.2.240, 203.0.113.10, 198.51.100.13, 10.1.2.3'
+  })).status, 429);
+});

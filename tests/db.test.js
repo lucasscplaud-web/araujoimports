@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID, createHash } from 'node:crypto';
+import pg from 'pg';
 import { PGlite } from '@electric-sql/pglite';
 import { loadMigrations, runMigrations, assertDatabaseReady } from '../server/migrations.js';
 import { checkInventory, insertOrderRequest, seedInventory, createDatabasePool } from '../server/db.js';
@@ -9,12 +10,24 @@ import { catalog } from '../server/catalog.js';
 
 // PGlite executes PostgreSQL SQL locally in WASM. It is not a network/pool or
 // multiconnection concurrency test; production advisory lock contention needs PG.
-async function database(t) {
+async function database(t, { pgTextArrays = false } = {}) {
   const engine = new PGlite();
   await engine.waitReady;
   const pool = {
     async query(sql, parameters) {
       const result = parameters ? await engine.query(sql, parameters) : (await engine.exec(sql)).at(-1);
+      if (pgTextArrays) {
+        // PGlite returns arrays directly. Native pg receives text protocol
+        // values and decodes each OID through pg-types; name[] is not registered.
+        for (const field of result?.fields ?? []) {
+          if (![1003, 1009].includes(field.dataTypeID)) continue;
+          for (const row of result.rows) {
+            const value = row[field.name];
+            if (Array.isArray(value)) row[field.name] = pg.types.getTypeParser(field.dataTypeID)(
+              `{${value.map(item => JSON.stringify(item)).join(',')}}`);
+          }
+        }
+      }
       return { ...result, rowCount: result?.affectedRows ?? result?.rows?.length ?? 0 };
     },
     async connect() { return { query: pool.query.bind(pool), release() {} }; }
@@ -35,6 +48,17 @@ test('fresh database reproduces 42P01; explicit migrations fix it and are idempo
   assert.equal(Number((await pool.query('SELECT count(*) AS n FROM public.inventory')).rows[0].n), 0);
   const indexes = await pool.query("SELECT indexname FROM pg_indexes WHERE schemaname = 'public'");
   assert.ok(indexes.rows.some(i => i.indexname === 'order_request_items_order_idx'));
+});
+
+test('migration and readiness accept native pg text-array decoding instead of PGlite-only arrays', async t => {
+  const { pool } = await database(t, { pgTextArrays: true });
+  const names = await pool.query("SELECT ARRAY['product_id'::name, 'variant_id'::name] AS names");
+  assert.equal(typeof names.rows[0].names, 'string'); // Actual pg parser for OID 1003.
+  const text = await pool.query("SELECT ARRAY['product_id'::text, 'variant_id'::text] AS names");
+  assert.deepEqual(text.rows[0].names, ['product_id', 'variant_id']); // OID 1009.
+  assert.deepEqual(await runMigrations(pool), ['001_initial', '002_integrity']);
+  assert.equal(await assertDatabaseReady(pool), true);
+  assert.deepEqual(await runMigrations(pool), []);
 });
 
 test('migrations adopt a legacy schema without changing existing stock; checksums detect edits', async t => {
