@@ -10,7 +10,7 @@ const minimumPrice = product => Math.min(...product.variants.map(v => variantPri
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const CART_KEY = 'araujo:bag:v2';
 const filters = { categories: new Set(), size: null, maxPrice: 600, colors: new Set(), search: '', sort: 'featured' };
-const state = { catalog: null, product: null, variantIndex: 0, animateToken: 0, routeToken: 0, cart: loadCart(), toastTimer: 0, checkoutKey: null, quote: null, shipping: null, shippingCep: '' };
+const state = { catalog: null, product: null, variantIndex: 0, animateToken: 0, routeToken: 0, cart: loadCart(), toastTimer: 0, checkoutKey: null, quote: null, shipping: null, shippingToken: 0 };
 
 function loadCart() {
   try {
@@ -38,17 +38,21 @@ function notifyApiError(error) {
     DADOS_INVALIDOS: 'Confira as opções selecionadas.',
     ITEM_INVALIDO: 'Este produto ou variação não está disponível.',
     ESTOQUE_INDISPONIVEL: 'Um dos itens não está disponível neste momento.',
-    PEDIDOS_INDISPONIVEIS: 'Pré-pedidos temporariamente indisponíveis. Configure o banco de dados.',
+    PEDIDOS_INDISPONIVEIS: 'Pré-pedidos temporariamente indisponíveis. Tente novamente mais tarde.',
+    SERVICO_INDISPONIVEL: 'Serviço temporariamente indisponível. Tente novamente mais tarde.',
     MUITAS_REQUISICOES: 'Muitas solicitações. Tente novamente mais tarde.',
     ERRO_INTERNO: 'Não foi possível processar a solicitação.',
     CEP_INVALIDO: 'Informe um CEP válido com 8 dígitos.',
     FRETE_NAO_CONFIGURADO: 'Frete real ainda não configurado na loja.',
+    EMBALAGENS_NAO_CONFIRMADAS: 'Frete temporariamente indisponível. Entre em contato com a loja.',
+    EMBALAGEM_INVALIDA: 'Frete temporariamente indisponível para um dos produtos.',
     FRETE_INDISPONIVEL: 'Frete indisponível. Confira o CEP ou tente mais tarde.',
     CHAVE_IDEMPOTENCIA_REUTILIZADA: 'Solicitação modificada. Abra novamente a finalização.',
-    ORIGEM_NAO_AUTORIZADA: 'A origem pública do site não corresponde à configuração do servidor (PUBLIC_ORIGIN).',
+    ORIGEM_NAO_AUTORIZADA: 'Requisição recusada. Atualize a página e tente novamente.',
+    PROXY_INVALIDO: 'Não foi possível validar a conexão. Tente novamente mais tarde.',
     TIPO_NAO_SUPORTADO: 'Formato de requisição não suportado.',
-    HTTP_503: 'Servidor temporariamente indisponível. Verifique as configurações no Render.',
-    HTTP_403: 'Requisição recusada pelo servidor. Confira PUBLIC_ORIGIN no Render.'
+    HTTP_503: 'Servidor temporariamente indisponível. Tente novamente mais tarde.',
+    HTTP_403: 'Requisição recusada pelo servidor. Atualize a página e tente novamente.'
   };
   return messages[error] || 'Ocorreu um erro. Tente novamente.';
 }
@@ -378,6 +382,7 @@ function renderCart() {
   $('#openCheckout').disabled = items.length === 0;
 }
 function clearShipping() {
+  state.shippingToken++;
   state.shipping = null;
   $('#shippingOptions').replaceChildren();
   $('#shippingLines').replaceChildren();
@@ -402,22 +407,25 @@ function renderShipping() {
   });
   const lines=$('#shippingLines');lines.replaceChildren();
   for(const line of selected.lines){
-    const row=el('div','shipping-line');row.append(el('span','',`${line.name} × ${line.quantity}`),el('strong','',formatMoney(line.costCents)));lines.append(row);
+    const row=el('div','shipping-line');row.append(el('span','',`${line.name} × ${line.quantity}`));lines.append(row);
   }
-  if (Number.isInteger(selected.marginCents)) { const extra=el('div','shipping-line');extra.append(el('span','','Margem temporária de segurança'), el('strong','',formatMoney(selected.marginCents)));lines.append(extra); }
   $('#shippingStatus').textContent = result.demo ? 'SIMULAÇÃO ILUSTRATIVA — não é uma cotação real.' : 'Cotação da transportadora. Revalidar antes de pagar.';
 }
 async function calculateShipping() {
   const cep=$('#shippingCep').value.replace(/\D/g,'');
   if(!/^\d{8}$/.test(cep)){toast('INFORME UM CEP VÁLIDO COM 8 DÍGITOS');return;}
   const items=relevantCart();if(!items.length){toast('ADICIONE UM PRODUTO À SACOLA');return;}
+  clearShipping();
+  const token = state.shippingToken;
+  const selection = state.cart.map(({productId,variantId,size,quantity}) => ({productId,variantId,size,quantity}));
   const button=$('#shippingCalculate');button.disabled=true;
   $('#shippingStatus').textContent='CONSULTANDO FRETE...';
   try {
-    const result=await requestJSON('/api/shipping/quote',{method:'POST',body:JSON.stringify({cep,items:state.cart})});
+    const result=await requestJSON('/api/shipping/quote',{method:'POST',body:JSON.stringify({cep,items:selection})});
+    if (token !== state.shippingToken) return;
     state.shipping={...result,selected:String(result.options[0]?.serviceId??'')};
     renderShipping();
-  } catch(error) {clearShipping();$('#shippingStatus').textContent=notifyApiError(error.message);}
+  } catch(error) {if (token === state.shippingToken) {clearShipping();$('#shippingStatus').textContent=notifyApiError(error.message);}}
   finally {button.disabled=false;}
 }
 
