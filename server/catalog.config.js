@@ -12,7 +12,7 @@ export const storeConfig = {
   categories: ['Tênis', 'Camisetas', 'Jaquetas', 'Moletons', 'Calças', 'Acessórios'],
   shipping: {
     originPostalCode: process.env.SHIPPING_ORIGIN_CEP || '',
-    marginCents: 400, // R$ 4,00 adicionados uma única vez por pedido
+    marginCents: Number(process.env.SHIPPING_MARGIN_CENTS ?? 400), // R$ 4,00 por pedido por padrão
   },
   products: [
     {

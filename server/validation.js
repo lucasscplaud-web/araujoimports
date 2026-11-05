@@ -13,8 +13,9 @@ export const cartSchema = z.object({
 }).strict();
 
 export const orderRequestSchema = cartSchema.extend({
-  contactName: z.string().trim().min(2).max(90).regex(/^[\p{L}\p{M}\s.'-]+$/u),
-  email: z.email().max(254).transform(s => s.trim().toLowerCase()),
+  contactName: z.string().trim().max(90).transform(s => s.normalize('NFC').replace(/ +/g, ' '))
+    .pipe(z.string().min(2).max(90).regex(/^[\p{L}\p{M} .'-]+$/u).refine(s => /\p{L}/u.test(s))),
+  email: z.string().trim().toLowerCase().pipe(z.email().max(254)),
   idempotencyKey: z.uuid()
 }).strict();
 
@@ -23,8 +24,10 @@ export class ClientError extends Error {
 }
 
 export function resolveCart(rawItems) {
+  const parsed = cartSchema.shape.items.safeParse(rawItems);
+  if (!parsed.success) throw new ClientError('DADOS_INVALIDOS');
   const merged = new Map();
-  for (const item of rawItems) {
+  for (const item of parsed.data) {
     const product = getProduct(item.productId);
     const variant = getVariant(product, item.variantId);
     if (!product || !variant || !product.sizes.includes(item.size)) throw new ClientError('ITEM_INVALIDO', 400);

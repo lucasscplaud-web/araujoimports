@@ -1,22 +1,7 @@
-# ARAUJO IMPORTS — atualização
+# ARAUJO IMPORTS — catálogo e operação
 
-## Catálogo
-Abra `server/catalog.config.js`: `name`, `category`, `sizes`, `variants[].priceCents`, `variants[].image` e `shipping` por produto.
+O cadastro permanece em `server/catalog.config.js`, com preços próprios em `variants[].priceCents` e tamanhos em `products[].sizes`. Identidade visual, imagens e animações de troca de cor permanecem na UI original.
 
-- Tênis: números 38–44 (definidos no produto).
-- Camisetas, jaquetas, moletons: P, M, G, GG.
-- Calças: numeração própria.
-- Bonés: Único.
+Pré-pedidos validam dados e estoque, sem cobrança ou reserva. O frete consulta APIs oficiais com todas as unidades, usando uma embalagem por unidade e margem interna configurável de R$ 4,00 por pedido. Dimensões/pesos devem corresponder às unidades embaladas reais antes de habilitar a integração. A prévia local não apresenta tarifas fictícias.
 
-## Frete real
-A rota `POST /api/shipping/quote` recebe `{cep,items}` e recalcula as quantidades e preço do carrinho no servidor. Cada linha SKU (produto/variante/tamanho) é cotada separadamente com sua quantidade. Somamos serviços da mesma transportadora, sem inventar valores. O cálculo por linha pode ser mais caro que enviar tudo em um pacote; é o modelo solicitado.
-
-Configure `.env` com `SHIPPING_ORIGIN_CEP`, `CORREIOS_BEARER_TOKEN` e `CORREIOS_SERVICES=PAC,SEDEX`. Consulte `LEIA-ME-CORREIOS.md` para pré-requisitos de contrato e permissões nas APIs oficiais. Em produção, revalide frete no fluxo de pagamento, persista a escolha do serviço e a cotação vinculada ao pedido e valide a geração de etiquetas. **O pré-pedido existente não cobra nem reserva frete ou estoque; não disponibilize checkout de pagamento antes dessas etapas.**
-
-O endpoint consulta cada linha em paralelo e tem limite de requisições. Exige token; sem configuração, devolve `FRETE_NAO_CONFIGURADO`. As dimensões são exemplos: configure medidas/peso reais por produto.
-
-## Prévia HTML
-A prévia offline usa **valores fictícios e claramente rotulados** porque não há backend/transportadora. Não os use para cobrar clientes.
-
-
-ATUALIZAÇÃO CORREIOS: consulte LEIA-ME-CORREIOS.md (site completo) / LEIA-ME-CORREIOS.txt (offline). O Melhor Envio foi substituído pelo adaptador dos Correios.
+Consulte o [README](README.md) para instalação, variáveis e testes, [CORRIGIR-ERROS-RENDER.md](CORRIGIR-ERROS-RENDER.md) para validação do ingress e implantação autorizada e [LEIA-ME-CORREIOS.md](LEIA-ME-CORREIOS.md) para contrato, autenticação e regras de transporte. Não execute migrações, seed ou deploy em produção sem autorização.

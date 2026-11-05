@@ -1,11 +1,12 @@
 import 'dotenv/config';
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import { Pool } from 'pg';
-const db = new Pool({ connectionString: process.env.DATABASE_URL });
+import { db } from '../server/db.js';
+import { runMigrations, assertDatabaseReady } from '../server/migrations.js';
 try {
-  if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL não configurada');
-  const sql = await readFile(new URL('../sql/schema.sql', import.meta.url), 'utf8');
-  await db.query(sql);
-  console.info('Schema criado/atualizado.');
-} finally { await db.end(); }
+  if (!db) throw Object.assign(new Error('DATABASE_URL not configured'), { code: 'DATABASE_NOT_CONFIGURED' });
+  const applied = await runMigrations(db);
+  await assertDatabaseReady(db);
+  console.info(JSON.stringify({ event: 'database_migrated', applied }));
+} catch (error) {
+  console.error(JSON.stringify({ event: 'database_migration_failed', code: error.code || 'INTERNAL' }));
+  process.exitCode = 1;
+} finally { await db?.end(); }

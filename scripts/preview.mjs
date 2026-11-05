@@ -14,7 +14,7 @@ const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=
 const projection = p => ({ id: p.id, slug: p.slug, name: p.name, category: p.category,
   kicker: p.kicker, tagline: p.tagline, description: p.description, badge: p.badge,
   featured: p.featured, priceCents: p.priceCents, sizes: p.sizes,
-  variants: p.variants.map(({ id, color, hex, image }) => ({ id, color, hex, image })) });
+  variants: p.variants.map(({ id, color, hex, image, priceCents }) => ({ id, color, hex, image, priceCents })) });
 const catalog = { brand: config.brand, currency: config.currency, announcement: config.announcement,
   categories: config.categories,
   products: config.products.map(p => { const { kicker: _k, tagline: _t, description: _d, ...publicCard } = projection(p);
@@ -52,7 +52,8 @@ http.createServer(async (req, res) => {
         const existing = merged.get(key);
         const quantity = (existing?.quantity || 0) + item.quantity;
         if (quantity > 10) throw Error('INVALID');
-        merged.set(key, { productId:p.id,variantId:v.id,size:item.size,quantity, name:p.name,variantName:v.color,unitPriceCents:p.priceCents,lineCents:p.priceCents * quantity });
+        const unitPriceCents = v.priceCents ?? p.priceCents;
+        merged.set(key, { productId:p.id,variantId:v.id,size:item.size,quantity, name:p.name,variantName:v.color,unitPriceCents,lineCents:unitPriceCents * quantity });
       }
       const items = [...merged.values()];
       const totalCents = items.reduce((s,i)=>s+i.lineCents,0);
@@ -61,6 +62,7 @@ http.createServer(async (req, res) => {
     } catch { return respond(res, 400, {error:'DADOS_INVALIDOS'}); }
   }
   if (req.method === 'POST' && url.pathname === '/api/order-requests') return respond(res, 503, { error: 'PEDIDOS_INDISPONIVEIS' });
+  if (req.method === 'POST' && url.pathname === '/api/shipping/quote') return respond(res, 503, { error: 'FRETE_NAO_CONFIGURADO' });
   if (req.method !== 'GET' || url.pathname.startsWith('/api/')) return respond(res, 404, { error: 'NAO_ENCONTRADO' });
   let target;
   if (url.pathname === '/' || /^\/produto\/[a-z0-9-]+\/?$/.test(url.pathname)) target = 'index.html';

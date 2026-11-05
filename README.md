@@ -1,182 +1,107 @@
-# ARAUJO IMPORTS STORE — HTML + CSS + JavaScript + Node.js
+# ARAUJO IMPORTS
 
-E-commerce independente inspirado em duas referências visuais:
-- Catálogo editorial claro com grade, filtros de categoria/tamanho/cor/preço, busca e ordenação;
-- Página de produto escura, imagem principal gigante, cores/tamanhos, variações, e animação cruzada (uma imagem **sobe**, outra **entra por baixo**).
+E-commerce em HTML, CSS e JavaScript, com Node.js 20+, Express 5, PostgreSQL e Redis. O catálogo, os preços individuais por variação, os tamanhos por produto e as animações de troca de cores ficam preservados.
 
-## Stack
+O fluxo registra **pré-pedidos `REQUESTED`**: não cobra, não reserva estoque, não compra frete e não gera etiquetas. A cotação dos Correios é informativa e independente do registro do pré-pedido.
 
-- **Frontend:** HTML5, CSS3, JavaScript ES Modules, sem frameworks de UI;
-- **Backend:** Node.js 20+ e Express 5;
-- **Configuração:** `server/catalog.config.js` (não acessível como arquivo estático);
-- **Banco:** PostgreSQL, driver `pg` com **parâmetros vinculados**;
-- **Proteções:** Helmet/CSP, Zod, rate limiting no Redis em produção, requisições same-origin e mensagens de erro genéricas;
-- **Imagens:** SVG autorais incluídos em `public/assets/products`, sem dependência de terceiros.
+## Desenvolvimento local
 
-## Prévia imediata do site (sem npm, sem banco de dados)
-
-Se você só quiser visualizar o catálogo, as animações, a sacola e a cotação local, rode:
-
-```bash
-node scripts/preview.mjs
-```
-
-Abra **http://127.0.0.1:3000**. Essa prévia de desenvolvimento **não registra pedidos nem processa pagamentos** e escuta somente no próprio computador.
-
-## Iniciando no computador
-
-**Pré-requisitos:** Node.js 20+, npm. Para registrar pré-pedidos: Docker Desktop ou PostgreSQL + Redis instalados.
-
-```bash
-npm install
+```sh
+npm ci
 cp .env.example .env
-```
-
-No Windows (CMD), use `copy .env.example .env`.
-
-### Somente testar o visual / carrinho
-
-Remova ou deixe vazia a variável `DATABASE_URL` no `.env` caso não tenha PostgreSQL. O catálogo, filtros, animações, carrinho e cotação continuarão operando; o envio de pré-pedido ficará desativado.
-
-```bash
-npm run dev
-```
-
-Acesse **http://localhost:3000**.
-
-### Habilitando solicitações de pedido
-
-```bash
 docker compose up -d
 npm run db:migrate
 npm run db:seed
 npm run dev
 ```
 
-O `db:seed` usa `stockPerSize` somente para **inserir SKUs ainda ausentes**; não sobrescreve estoque existente.
+No PowerShell, copie com `Copy-Item .env.example .env`. Abra [localhost:3000](http://localhost:3000). O Docker é opcional se PostgreSQL/Redis já estiverem disponíveis. Sem `DATABASE_URL`, somente em desenvolvimento, catálogo e carrinho continuam acessíveis; pré-pedidos ficam indisponíveis. Sem Redis, apenas em desenvolvimento, o limite usa memória.
 
-> **Importante:** Este projeto registra **pré-pedidos** (status `REQUESTED`), sem pagamento, sem frete e sem reserva de estoque. Não afirma que um pedido está pago ou confirmado. Um e-commerce de produção requer gateway de pagamento, callbacks/webhooks assinados, expiração de reserva, cálculo de frete, impostos, devoluções e fluxo administrativo.
+`npm run preview` abre uma prévia local sem dependências npm em [127.0.0.1:3000](http://127.0.0.1:3000). Ela preserva preços por variação, mas não grava pedidos, não verifica estoque e não fornece fretes fictícios.
 
-## Cadastrar produto pela config
+## Banco de dados
 
-Abra `server/catalog.config.js`, dentro de `products`. Exemplo:
+`npm run db:migrate` executa migrações versionadas, idempotentes e transacionais. A tabela `public.schema_migrations` registra versões e checksums; um advisory lock serializa execuções concorrentes. Não altere migrações já aplicadas: adicione uma nova versão.
 
-```js
-{
-  id: 'meu-tenis',
-  slug: 'meu-tenis',
-  name: 'MEU TÊNIS',
-  kicker: 'RUNNING / STREET',
-  category: 'Tênis',
-  description: 'Descrição do produto.',
-  tagline: 'MOVE THE WORLD.',
-  priceCents: 29990,      // R$ 299,90
-  badge: 'NEW',
-  featured: true,
-  sizes: ['39', '40', '41', '42'],
-  variants: [
-    {
-      id: 'meu-tenis-vermelho',
-      color: 'Vermelho',
-      hex: '#ed3239',
-      image: '/assets/products/meu-tenis-vermelho.svg',
-      stockPerSize: 10
-    }
-  ]
-}
-```
+As consultas usam estas tabelas no schema `public`:
 
-Coloque a imagem em `public/assets/products/meu-tenis-vermelho.svg`. Ao adicionar outra variante, ela aparecerá como miniatura e poderá ser selecionada, com a animação de troca. **Para preservar a fluidez**, use imagens com transparência e enquadramento/posição similares nas variantes do mesmo produto. O validador restringe imagens a arquivos locais SVG, PNG, JPG/JPEG e WebP em `public/assets/products/`, evitando URLs arbitrárias ou protocolos perigosos. Use SVG apenas se for um arquivo confiável; para imagens enviadas por clientes, prefira conversão para WebP/PNG com verificação de conteúdo.
+| Tabela | Finalidade e integridade |
+| --- | --- |
+| `inventory` | SKU por produto/variação/tamanho, identidade única e quantidade não negativa. |
+| `order_requests` | Contato, hash, chave UUID única, status, moeda e total calculado no servidor. |
+| `order_request_items` | Snapshot das linhas; FK para o pedido, índices e limites comerciais. |
 
-Para incorporar novas quantidades de estoque ao PostgreSQL execute novamente `npm run db:seed` (ele não altera SKUs já existentes). Para alterar estoque existente, crie uma operação administrativa autenticada ou atualize o banco sob controle administrativo. A quantia do `stockPerSize` em JS **não** substitui o estoque do banco durante solicitações.
+A ausência de qualquer uma dessas tabelas provoca `42P01` nas consultas correspondentes. A migração inicial cria as ausentes e adota o schema original; a segunda acrescenta constraints e índice de itens por pedido. Dados incompatíveis abortam a transação para revisão administrativa, sem apagar ou corrigir registros silenciosamente. O banco de produção não foi consultado para determinar quais relações faltam naquela instalação.
 
-## Estrutura
+A aplicação verifica schema e versões antes de escutar HTTP; **não migra nem popula o banco automaticamente**. O seed é um comando separado, transacional, que insere somente SKUs ausentes sem sobrescrever estoque. `stockPerSize` do catálogo é uma carga inicial, não estoque real. Em produção, só execute seed após conferir quantidades reais e autorizar a operação explicitamente.
 
-```text
-avant-store/
-├── public/
-│   ├── index.html                 # HTML principal e templates visuais
-│   ├── css/style.css             # Catálogo, produto, animações, responsividade
-│   ├── js/app.js                 # SPA vanilla, busca, filtros, rotas, sacola, checkout
-│   └── assets/products/*.svg     # Imagens locais por cor
-├── server/
-│   ├── catalog.config.js         # CADASTRO: produto, imagem, preço, categoria, variante
-│   ├── catalog.js                # Validação da config e projeção pública
-│   ├── validation.js             # Schemas de entrada + cálculo server-side
-│   ├── db.js                     # PostgreSQL parametrizado e transações
-│   └── index.js                  # HTTP, segurança, rotas e tratamento de erro
-├── sql/schema.sql               # Schema idempotente
-├── scripts/migrate.js           # Criar tabelas
-├── scripts/seed.js              # Inserir inventário inicial
-├── scripts/generate_assets.py   # Recriar SVGs demonstrativos
-├── tests/catalog.test.js        # Testes de validação
-├── docker-compose.yml           # PostgreSQL e Redis locais
-├── .env.example
-└── package.json
-```
+Pré-pedidos validam estoque em lote, com locks de leitura durante a transação. Pedidos e linhas são gravados atomicamente. Retentativas da mesma chave são serializadas; payload diferente resulta em conflito. Como não existe reserva, disponibilidade pode mudar após a solicitação.
 
-## Rotas HTTP
+## Variáveis de ambiente
 
-| Método | Rota | Retorno |
+Use [.env.example](.env.example). Nunca publique `.env`, URLs com credenciais ou tokens.
+
+| Variável | Uso/padrão |
+| --- | --- |
+| `NODE_ENV` | `development` local; `production` exige PostgreSQL, Redis, origem HTTPS e proxy explícito. |
+| `PORT` | `3000`; no Render, mantenha o valor fornecido pela plataforma. |
+| `PUBLIC_ORIGIN` | Origem exata do site. Sem valor usa `RENDER_EXTERNAL_URL` no Render; localmente `http://localhost:PORT`. |
+| `RENDER_EXTERNAL_URL` | Fornecida pelo Render; fallback da origem pública. Domínio personalizado exige `PUBLIC_ORIGIN` correspondente. |
+| `TRUST_PROXY` | Inteiro de `0` a `8`. `0` significa acesso direto; obrigatório explicitamente em produção. Para proxy, use a quantidade verificada de saltos até o IP confiável do cliente. |
+| `TRUSTED_PROXY_CIDRS` | IPs/CIDRs explícitos dos proxies conhecidos, separados por vírgula; obrigatório com `TRUST_PROXY>0`. Sem redes universais ou aliases amplos. |
+| `DATABASE_URL` | Conexão PostgreSQL; obrigatória em produção. |
+| `DB_POOL_SIZE` | Inteiro `1..100`, padrão `10`. Divida o orçamento de conexões entre todas as instâncias. |
+| `PG_SSL` | `true` força TLS com certificado/hostname verificados, inclusive sobre opções conflitantes da URL; ausente usa a configuração do driver/URL. Nunca desabilite verificação de certificado para contornar erro. |
+| `REDIS_URL` | Redis/Render Key Value para limites distribuídos; obrigatório em produção. Falha do store não libera requisições. |
+| `ALLOW_PRODUCTION_SEED` | Padrão desabilitado; `true` só para uma carga manual de estoque autorizada. Nunca no comando de start/build. |
+| `PREVIEW_PORT` | `3000`, somente para a prévia local. |
+| `SHIPPING_ORIGIN_CEP` | CEP real de origem, oito dígitos. |
+| `SHIPPING_MARGIN_CENTS` | `400` (R$ 4,00) uma vez por pedido/opção; inteiro `0..10000`, exclusivo do servidor. |
+| `SHIPPING_PACKAGES_CONFIRMED` | Padrão desabilitado; `true` após medir cada unidade embalada e confirmar despacho separado por unidade. |
+| `CORREIOS_USER` | Usuário idCorreios, para renovação automática. |
+| `CORREIOS_ACCESS_CODE` | Código de acesso das APIs CWS, exclusivo do servidor. |
+| `CORREIOS_POSTING_CARD` | Cartão de postagem para autenticação automática; exige as duas variáveis anteriores. |
+| `CORREIOS_BEARER_TOKEN` | Alternativa às três credenciais automáticas; operador deve renovar o token estático. |
+| `CORREIOS_CONTRACT`, `CORREIOS_DR` | Par opcional, ambos necessários se informado; confira os dados do contrato. |
+| `CORREIOS_SERVICES` | `PAC,SEDEX`; habilite somente modalidades permitidas no contrato. |
+| `CORREIOS_PAC_CODE`, `CORREIOS_SEDEX_CODE` | `03298`, `03220`; substitua pelos códigos autorizados para o contrato. |
+| `CORREIOS_API_VERSION` | `v1`; `v3` somente após conferir endpoints no CWS do contrato. |
+| `CORREIOS_TIMEOUT_MS` | `12000`, limite total `1000..30000` ms por cotação. |
+
+Detalhes de autenticação, embalagem e limites estão em [LEIA-ME-CORREIOS.md](LEIA-ME-CORREIOS.md). As dimensões incluídas no projeto eram provisórias: sem confirmação física não são apresentadas como uma cotação válida.
+
+## API e segurança
+
+| Método | Rota | Comportamento |
 | --- | --- | --- |
-| GET | `/api/catalog` | Resumo público mínimo de produtos |
-| GET | `/api/products/:slug` | Detalhes públicos de **um** produto |
-| POST | `/api/checkout/quote` | Itens e cotação recalculados **no servidor** |
-| POST | `/api/order-requests` | Registra **pré-pedido**, sem pagamento |
-| GET | `/api/health` | Status básico do processo |
+| GET | `/api/catalog` | Catálogo público, sem estoque interno. |
+| GET | `/api/products/:slug` | Produto, variações e tamanhos próprios. |
+| POST | `/api/checkout/quote` | Recalcula preço e verifica disponibilidade. |
+| POST | `/api/shipping/quote` | Consulta real dos Correios para todos os volumes. |
+| POST | `/api/order-requests` | Registra pré-pedido, sem cobrança/reserva. |
+| GET | `/api/health` | Processo HTTP vivo. |
+| GET | `/api/ready` | Prontidão do banco/schema e Redis, sem detalhes internos. |
 
-Os POSTs aceitam JSON estrito com `Origin` do site. A resposta do servidor não contém segredos, quantidades detalhadas de estoque, rastreamento de erros nem a configuração integral.
+POST exige JSON e `Origin` igual à origem pública. O navegador envia somente IDs, tamanho e quantidade; no pré-pedido, nome, e-mail e chave UUID. Campos de preço extras são rejeitados. O resolver e a persistência também reconstroem todos os dados comerciais a partir do catálogo. Queries são parametrizadas e tabelas explicitamente qualificadas com `public`.
 
-## Modelo de segurança
+O rate limiter mantém validações ativas, agrupa IPv6 e usa stores Redis distintos por limite. A confiança exige quantidade **e** endereço dos proxies, e a cadeia é validada antes do limite. Prefixos de IP falsificados à esquerda são ignorados; conexão direta que tenta se passar por proxy é recusada. Veja [o procedimento de validação no Render](CORRIGIR-ERROS-RENDER.md).
 
-- **Não há como impedir inspeção de HTML, CSS, JS, imagens, nomes e preços públicos**: todos são necessários ao navegador. Não exponha chaves, credenciais, custo interno, margem, tokens administrativos nem dados de outras pessoas.
-- O cliente envia apenas `productId`, `variantId`, `size`, `quantity` e, no pré-pedido, os dados de contato. Qualquer campo extra inesperado é rejeitado por Zod.
-- O backend **ignora preços do navegador** e resolve ID/variante/tamanho/preço diretamente em `server/catalog.config.js`.
-- Usamos `$1`, `$2`, ... nas queries PostgreSQL. **Não** há interpolação de valores do usuário na query.
-- O `Origin` é validado nas rotas POST. O proxy reverso deve fixar o host e encaminhar apenas cabeçalhos confiáveis. Não habilite CORS amplo.
-- CSP de `helmet` bloqueia scripts/estilos de terceiros, inline script, iframes e destinos não permitidos. Conteúdos dinâmicos no frontend usam `textContent` e DOM APIs, sem interpretar conteúdo como HTML não confiável.
-- O rate limiting em instâncias múltiplas requer Redis; sem `REDIS_URL` o servidor **não inicia em produção**. Em desenvolvimento, há fallback em memória.
-- O identificador do cliente é extraído pela configuração `TRUST_PROXY` do Express; não habilite proxy confiável para todos sem controle sobre a camada de ingress.
-- Idempotência em `order-requests` evita registros duplicados por reenvio (UUID), verificando hash do payload para impedir reaproveitamento indevido da mesma chave com conteúdo diferente.
-- O pedido é apenas uma solicitação: **não reserva estoque e não captura pagamento**. Validação de disponibilidade no momento do pedido é informativa e pode mudar em seguida.
-- Logs omitem PII/stack trace; mensagens genéricas chegam ao cliente. Configure logs seguros, mascaramento e retenção limitada em produção.
+Helmet/CSP, limite de corpo, validação estrita e same-origin continuam ativos. Erros públicos são genéricos, com `X-Request-Id` para correlação. Logs não contêm corpo, contato, IP, SQL, URLs de banco ou token. Frete público mostra total e volumes; a margem interna permanece no backend. Ajuste retenção e controle de acesso dos logs em produção.
 
-## Escalabilidade e produção
+## Catálogo e manutenção
 
-Este projeto é uma **base arquitetural**, não uma certificação de segurança nem um checkout pronto para transacionar dinheiro.
+Edite `server/catalog.config.js`: cada produto mantém `sizes` e cada variação pode sobrescrever `priceCents`. Valores são inteiros em centavos. Imagens locais SVG/PNG/JPG/WebP ficam em `public/assets/products`. Use somente SVG confiável. Os campos `shipping` devem medir uma unidade **já embalada**, incluindo proteção e peso bruto; não são medidas apenas do produto.
 
-Antes de publicar, você deve:
+`server/app.js` contém a aplicação testável; `server/index.js` configura infraestrutura e encerramento; `server/db.js` concentra persistência; `server/migrations.js` mantém o contrato do schema; `server/shipping.js` integra o provedor. A UI continua em `public`, sem acesso aos módulos internos.
 
-1. Implantar **HTTPS** no proxy/reverse proxy, ajustar `PUBLIC_ORIGIN` para a URL real e definir `TRUST_PROXY` apenas para a topologia conhecida.
-2. Usar credenciais reais/rotacionadas para PostgreSQL e Redis com redes privadas, backups, limites de conexão e métricas.
-3. Integrar um provedor de pagamentos com checkout hospedado, assinatura de webhook, conferência do estado do pagamento do lado do servidor, idempotência no provedor e gestão de expiração/estorno.
-4. Criar autenticação administrativa com MFA e RBAC, sem credenciais embutidas no frontend. Log de auditoria para mudanças de catálogo e estoque.
-5. Adicionar termos, política de privacidade, base legal LGPD, frete, devolução, antifraude, monitoramento e notificações.
-6. Executar testes E2E no navegador, testes concorrentes/estresse, revisão de dependências (`npm audit`) e análises DAST/SAST antes do go-live.
-7. Para grandes catálogos, migrar a configuração para uma tabela administrada no banco e expor apenas views públicas filtradas/paginadas; colocar CDN na frente de assets imutáveis e cache para catálogo.
+## Verificações
 
-### Comandos
-
-```bash
-npm test          # testes de validação (após npm install)
-npm run dev       # servidor com reinício automático
-npm start         # servidor sem watch
+```sh
+npm run check
+npm test
+npm audit --omit=dev
 ```
 
-## Preço individual por cor
+Os testes cobrem proxy/IP falsificado, limite IPv4/IPv6, validação HTTP, preços/estoque/idempotência, `42P01`, migrações e rollback em PostgreSQL local WASM (PGlite), integração HTTP com persistência e Correios com respostas controladas. Fixtures de tarifas existem somente nos testes.
 
-Edite `server/catalog.config.js`, no array `variants` de cada produto:
-
-```js
-{ id: 'air-max-black', color: 'Preto', priceCents: 48990, /* ... */ },
-{ id: 'air-max-white', color: 'Branco', priceCents: 52990, /* ... */ }
-```
-
-`priceCents` em variante é opcional: sem ele, usa-se o valor base do produto.
-No backend, a cotação e o pedido usam o preço da variação selecionada,
-resolvido exclusivamente no servidor; valores enviados pelo navegador são ignorados.
-
-A versão offline possui dados demonstrativos no `js/offline-data.js`.
-
-
-ATUALIZAÇÃO CORREIOS: consulte LEIA-ME-CORREIOS.md (site completo) / LEIA-ME-CORREIOS.txt (offline). O Melhor Envio foi substituído pelo adaptador dos Correios.
+PGlite não substitui ensaio de concorrência entre conexões reais. Credenciais/contrato dos Correios, medidas físicas, ingress real do Render, PostgreSQL e Redis de produção exigem validação operacional separada. Nenhum comando de deploy, migração de produção, pagamento ou merge faz parte dos testes. O workflow CI executa testes em Node 20/22/24 sem segredos ou deploy.

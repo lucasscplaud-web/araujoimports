@@ -1,18 +1,15 @@
 import 'dotenv/config';
-import { Pool } from 'pg';
 import { catalog } from '../server/catalog.js';
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL não configurada');
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+import { db, seedInventory } from '../server/db.js';
+import { assertDatabaseReady } from '../server/migrations.js';
 try {
-  for (const product of catalog.products) {
-    for (const variant of product.variants) {
-      for (const size of product.sizes) {
-        const sku = `${product.id}:${variant.id}:${size}`;
-        await pool.query(`INSERT INTO inventory (sku, product_id, variant_id, size_label, available_quantity)
-          VALUES ($1,$2,$3,$4,$5) ON CONFLICT (sku) DO NOTHING`,
-          [sku, product.id, variant.id, size, variant.stockPerSize]);
-      }
-    }
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_PRODUCTION_SEED !== 'true') {
+    throw Object.assign(new Error('Explicit production seed authorization required'), { code: 'PRODUCTION_SEED_DISABLED' });
   }
-  console.info('Estoque inicial criado (quantidades existentes preservadas).');
-} finally { await pool.end(); }
+  await assertDatabaseReady(db);
+  const inserted = await seedInventory(catalog.products, db);
+  console.info(JSON.stringify({ event: 'inventory_seeded', inserted, existingStockPreserved: true }));
+} catch (error) {
+  console.error(JSON.stringify({ event: 'inventory_seed_failed', code: error.code || 'INTERNAL' }));
+  process.exitCode = 1;
+} finally { await db?.end(); }
